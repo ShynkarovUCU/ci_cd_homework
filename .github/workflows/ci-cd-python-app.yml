@@ -137,11 +137,18 @@ jobs:
     - name: Deploy updated Kubernetes resources
       run: |
         kubectl apply -k k8s/ 
-   
-    # DO SOME CHECKS HERE BEFORE COMMIT
-    #- name: Deploy updated Kubernetes resources
-    #  run: |
-    #    kubectl apply -k k8s/
+
+   #VALIDATION CHECK
+    - name: Install kubeval
+      run: |
+        curl -sL https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz -o kubeval.tar.gz
+        tar xf kubeval.tar.gz
+        sudo mv kubeval /usr/local/bin/
+    
+    - name: Validate Kubernetes configurations
+      run: |
+        kubeval k8s/*.yaml
+    #VALIDATION CHECK END
 
     # REMOVE OLD DEPLOYMENT!!
     - name: Remove old namespace
